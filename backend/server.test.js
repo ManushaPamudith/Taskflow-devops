@@ -18,7 +18,7 @@ test('GET /api/tasks returns 200', async () => {
     const response = await fetch(`http://127.0.0.1:${port}/api/tasks`);
     const body = await response.json();
 
-    assert.equal(response.status, 201);
+    assert.equal(response.status, 200);
     assert.ok(Array.isArray(body));
   } finally {
     server.close();
