@@ -1,5 +1,6 @@
 services:
   backend:
+    image: todoapp-backend:latest
     build:
       context: ./backend
     ports:
@@ -9,6 +10,7 @@ services:
     restart: unless-stopped
 
   frontend:
+    image: todoapp-frontend:latest
     build:
       context: ./frontend
     ports:
