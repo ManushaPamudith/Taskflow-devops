@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const app = express();
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI?.trim();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -37,6 +37,11 @@ const Task = mongoose.model('Task', taskSchema);
 async function connectToDatabase() {
   if (!MONGODB_URI) {
     console.error('MONGODB_URI is not defined in the environment variables.');
+    process.exit(1);
+  }
+
+  if (!MONGODB_URI.startsWith('mongodb://') && !MONGODB_URI.startsWith('mongodb+srv://')) {
+    console.error('MONGODB_URI must start with "mongodb://" or "mongodb+srv://".');
     process.exit(1);
   }
 

@@ -1,6 +1,19 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { app } = require('./server');
+const mongoose = require('mongoose');
+const { app, Task } = require('./server');
+
+const MONGODB_URI = process.env.MONGODB_URI?.trim();
+
+async function connectToDatabase() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI is not defined in the environment variables.');
+  }
+
+  await mongoose.connect(MONGODB_URI, {
+    family: 4,
+  });
+}
 
 async function startServer() {
   return new Promise((resolve) => {
@@ -10,6 +23,14 @@ async function startServer() {
     });
   });
 }
+
+test.before(async () => {
+  await connectToDatabase();
+});
+
+test.after(async () => {
+  await mongoose.disconnect();
+});
 
 test('GET /api/tasks returns 200', async () => {
   const { server, port } = await startServer();

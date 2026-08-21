@@ -9,6 +9,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     steps:
       - name: Checkout repository
@@ -31,10 +33,15 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
+      - name: Validate MongoDB URI secret
+        run: |
+          if [ -z "$MONGODB_URI" ]; then
+            echo "MONGODB_URI secret is not set"
+            exit 1
+          fi
+
       - name: Run backend tests
         working-directory: ./backend
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: npm test
 
       - name: Build Docker images
